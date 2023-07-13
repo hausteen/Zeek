@@ -1,35 +1,59 @@
 #!/bin/bash
 
 # Author: Austin Hunt
-# Date: 24 June 2023
-# Version: 1.0
+# Date: 12 July 2023
+# Version: 1.1
 
 # Purpose of the script:
-# This script is to make it so that all the log file names
+# This script will change every colon to an underscore character
+# in every log file name under every folder in the zeek logs folder
+# excluding the folder named "current".
+# This script forces Zeek log file names to
 # have valid names on any operating system you use.
 # Windows in particular doesn't allow colon (:) characters in filenames.
-# This script will change every colon to an underscore character
-# in every log file name under every folder in the logs folder
-# excluding the folder named "current".
 
 # Usage:
-# Step 1: Edit the "zeek_logs_folder" variable down below to match 
-#         the folder path to the zeek logs for your zeek install.
-# Step 2: Make the script executable (chmod +x filename).
-# Step 3: Make sure that you have write permissions on the files in 
+# Step 1: Make sure that you have write permissions on the files in 
 #         the zeek logs folder. You probably need "root" 
 #         if you aren't the "zeek" user.
-# Step 4: Run the script (./filename)
+# Step 2: Make the script executable (chmod +x convert_zeek_filenames.sh).
+# Step 3: Run the script (./convert_zeek_filenames.sh)
 
-# Put in the folder location where the Zeek logs are.
-# This is the top level log folder. 
-# You should see yyyy-mm-dd folders in this logs folder.
-zeek_logs_folder="/opt/zeek/logs/"
+os_name=$(grep -E "^ID=" /etc/os-release | cut -d "=" -f 2)
 
-# Run a check to make sure the path exists
+# This script is built for Debian, but the user can still run this if they choose to.
+if [[ $os_name != "debian" ]]; then
+    echo "This script was meant for Debian only. It may not work on your distro."
+    while true; do
+        read -r -p "Proceed anyway? [y/n]: " proceed_anyway_answer
+        case $proceed_anyway_answer in
+            [nN] | [nN][oO])
+                exit
+                ;;
+            [yY] | [yY][eE][sS])
+                break
+                ;;
+        esac
+    done
+fi
+
+# Find the base zeek folder location
+if [[ -d "/opt/zeek/" ]]; then
+    zeek_base_folder="/opt/zeek"
+elif [[ -d "/usr/local/zeek/" ]]; then
+    zeek_base_folder="/usr/local/zeek"
+fi
+
+# Get the Zeek log folder from the zeekctl.cfg file
+zeek_logs_folder=$(grep -E "LogDir\s?=" $zeek_base_folder/etc/zeekctl.cfg | grep -Eo "/.+" | sed -E "/\/$/! s/$/\//")
+# Verify the zeek_logs_folder path. If its wrong, verify if the default logs folder location is there and use that instead.
 if [[ ! -d $zeek_logs_folder ]]; then
-	echo "The folder path does not exist."
-	exit
+	if [[ -d "$zeek_base_folder/logs/" ]]; then
+		zeek_logs_folder="$zeek_base_folder/logs/"
+	else
+		echo "Can't find the zeek logs folder. Exiting."
+		exit
+	fi
 fi
 
 # Run a check to make sure the folder path has a trailing slash.
@@ -52,6 +76,6 @@ do
 	for j in $(ls *.log.gz);
 	do
 		new_name=$(echo $j | sed -E 's/:/_/g')
-		mv $j $new_name
+		mv -i $j $new_name
 	done
 done
