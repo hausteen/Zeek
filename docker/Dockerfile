@@ -12,7 +12,7 @@
 
 # Edit this ZEEK_TAG arg value if you want to use a different tag number from zeekurity/zeek
 ARG ZEEK_TAG=lts
-FROM zeekurity/zeek:${ZEEK_TAG}
+FROM zeek/zeek:${ZEEK_TAG}
 RUN apt update && apt install -y \
     gdb \
     iproute2 \
