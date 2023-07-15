@@ -13,7 +13,7 @@
 # Edit this ZEEK_TAG arg value if you want to use a different tag number from zeekurity/zeek
 ARG ZEEK_TAG=lts
 FROM zeek/zeek:${ZEEK_TAG}
-RUN apt update && apt install -y gdb iproute2 vim ip
+RUN apt update && apt install -y gdb iproute2 vim iproute2
 # Edit this ZEEK_HOME_DIR arg value to /opt/zeek/ if your installation uses that directory instead
 ARG ZEEK_HOME_DIR=/usr/local/zeek/
 # Edit this ZEEK_LISTEN_INTERFACE arg value to your NIC's name so Zeek can listen on the right network interface
