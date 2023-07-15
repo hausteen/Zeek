@@ -12,7 +12,7 @@
 # Step 2: Run the script (./start_zeek_docker.sh)
 
 # You can edit these values
-TAG_NAME='my_zeek_tag'
+TAG_NAME='my_zeek_image'
 CONTAINER_NAME='my_zeek_container'
 NETWORK_NAME='host' # This has to be a docker network that exists. Its best to leave is as host, unless you know you need to change it.
 VOLUME_NAME='my_zeek_volume'
