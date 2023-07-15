@@ -32,6 +32,9 @@ ARG ZEEK_LOG_ROTATION_INTERVAL=86400
 # Disable the zeek emails
 RUN echo "# Output logs in json format"       | tee -a ${ZEEK_HOME_DIR}share/zeek/site/local.zeek && \
     echo "@load policy/tuning/json-logs.zeek" | tee -a ${ZEEK_HOME_DIR}share/zeek/site/local.zeek && \
+    echo "10.0.0.0/8"                         | tee -a ${ZEEK_HOME_DIR}etc/networks.cfg && \
+    echo "172.16.0.0/12"                      | tee -a ${ZEEK_HOME_DIR}etc/networks.cfg && \
+    echo "192.168.0.0/16"                     | tee -a ${ZEEK_HOME_DIR}etc/networks.cfg && \
     echo "# Set zeek port number"             | tee -a ${ZEEK_HOME_DIR}etc/zeekctl.cfg && \
     echo "ZeekPort = ${ZEEK_PORT_NUM}"        | tee -a ${ZEEK_HOME_DIR}etc/zeekctl.cfg && \
     echo "# Disable Zeek Emails"              | tee -a ${ZEEK_HOME_DIR}etc/zeekctl.cfg && \
