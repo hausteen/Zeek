@@ -79,3 +79,5 @@ do
 		mv -i $j $new_name
 	done
 done
+
+echo "Finished the file renaming. Exiting program now."
